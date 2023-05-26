@@ -1,9 +1,7 @@
 import json
-
 from django.http import JsonResponse
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-
 from user.models import User
 from information.models import Comment,Follow,Favorite
 from video.models import Video
@@ -75,7 +73,6 @@ def getlike(request):
             videos = Video.objects.filter(id__in=likes)
             videoDetails = []
             for video in videos:
-                # 根据视频详情信息表的具体字段调整下面的代码
                 videoDetails.append({
                     'id':video.id,
                     'title' : video.title,
@@ -201,7 +198,7 @@ def sign(request):
     else:
         return JsonResponse({'message': '请求方法不允许'}, status=401)
 @csrf_exempt
-def deleteComment(request):
+def deletecontent(request):
     if request.method == 'POST':
         try:
             data = json.loads(request.body)
@@ -251,29 +248,66 @@ def getVideo(request):
         return JsonResponse({'message': '请求方法不允许'}, status=401)
 
 @csrf_exempt
-def userprofile(request):
+def follow(request):
     try:
-        if request.method == 'GET':
+        if request.method == 'POST':
             data = json.loads(request.body)
-            id = data.get('id')
+            userid = data.get('userId')
+            followid = data.get('fanId')
             try:
-                user = User.objects.get(id=id)
-                userData = {
-                    'id': user.id,
-                    'username': user.username,
-                    'password': user.password,
-                    'videoNum': user.videoNum,
-                    'likeNum': user.likeNum,
-                    'collectNum': user.collectNum,
-                    'fanNum': user.fanNum,
-                    'followNum': user.followNum,
-                    'avatarUrl': user.avatarUrl,
-                    'isSuperAdmin': user.isSuperAdmin,
-                    'createdTime': user.createdTime,
-                    'sign': user.sign
-                }
-                return JsonResponse({'message': '成功返回', 'userData': userData}, status=200,safe=False)
+                user = User.objects.get(id=userid)
+                follow = User.objects.get(id=followid)
+                following = Follow.objects.create(followingId= followid, followerId=userid)
+                return JsonResponse({'message': '成功返回',}, status=200,safe=False)
             except User.DoesNotExist:
                 return JsonResponse({'msg': '用户不存在'}, status=401)
     except Exception as e:
         return JsonResponse({'msg': '未知错误'}, status=402)
+@csrf_exempt
+def disfollow(request):
+    try:
+        if request.method == 'POST':
+            data = json.loads(request.body)
+            userid = data.get('userId')
+            followid = data.get('fanId')
+            try:
+                user = User.objects.get(id=userid)
+                follow = User.objects.get(id=followid)
+                Follow.objects.filter(followingId= followid, followerId=userid).delete()
+                return JsonResponse({'message': '成功返回',}, status=200,safe=False)
+            except User.DoesNotExist:
+                return JsonResponse({'msg': '用户不存在'}, status=401)
+    except Exception as e:
+        return JsonResponse({'msg': '未知错误'}, status=402)
+
+
+
+@csrf_exempt
+def getcomplain(request):
+    if request.method == 'GET':
+        try:
+            complaints = Comment.objects.values('content', 'userId', 'videoId')
+            complaint_list = []
+            for complaint in complaints:
+                video_id = complaint['videoId']
+                video = Video.objects.get(id=video_id)
+                video_url = video.videoUrl
+                video_title = video.title
+                user_id = complaint['userId']
+                user = User.objects.get(id = user_id)
+                user_name = user.username
+                complaint_data = {
+                    'content': complaint['content'],
+                    'username': user_name,
+                    'title': video_title,
+                    'videoUrl': video_url
+                }
+                complaint_list.append(complaint_data)
+
+
+            return JsonResponse({'complaintList':complaint_list,'message':'成功返回'}, status=200, safe=False)
+        except:
+            return JsonResponse({'message': '未知错误'}, status=401)
+    else:
+        return JsonResponse({'message': '请求方法不允许'}, status=401)
+

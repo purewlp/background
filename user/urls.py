@@ -17,7 +17,10 @@ urlpatterns = [
     path('getmessage/',views.getmessage),
     path('avatar/',views.avatar),
     path('sign/',views.sign),
-    path('deletecomment/',views.deleteComment),
+    path('deletecontent/',views.deletecontent),
     path('getvideo/',views.getVideo),
     path('userprofile/',views.userprofile),
+    path('follow/',views.follow),
+    path('disfollow/',views.disfollow),
+    path('getcomplain/',views.getcomplain),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

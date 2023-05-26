@@ -1,5 +1,4 @@
 import json
-
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from video.models import Video
@@ -43,6 +42,8 @@ def user(request):
     if request.method == 'GET':
         data = json.loads(request.body)
         search_str = data.get('search_str')
+        if(len(search_str)>30):
+            return JsonResponse({'message': '检索信息过长'}, status=401)
         users = User.objects.filter(username__icontains=search_str)
         if users.exists():
             userInfo = []
@@ -68,7 +69,7 @@ def user(request):
         return JsonResponse({'message': '请求方法不允许'}, status=401)
 
 @csrf_exempt
-def zone(request):
+def getzone(request):
     if request.method == 'GET':
         data = json.loads(request.body)
         zone = data.get('zone')
@@ -132,8 +133,8 @@ def getfollow(request):
                     'createdTime' : video.createdTime,
                     'needAudit' : video.needAudit
                     })
-
-            return JsonResponse({'videos': video_list, 'message': '成功返回'}, status=200,safe=False)
+            isFollow = True
+            return JsonResponse({'videos': video_list, 'message': '成功返回','isFollow':isFollow}, status=200,safe=False)
         except Exception as e:
             return JsonResponse({'message': '未知错误'}, status=401)
     else:

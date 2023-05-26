@@ -1,8 +1,6 @@
 from django import apps
 from django.db import models
-
 from user.models import User
-
 
 class Video(models.Model):
     title = models.CharField(max_length=64)

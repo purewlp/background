@@ -11,8 +11,8 @@ app_name = 'index'
 urlpatterns = [
     path('video/', views.video),
     path('user/',views.user),
-    path('zone/',views.zone),
     path('getfollow/',views.getfollow),
+    path('getzone/',views.getzone),
 
 
 ]
