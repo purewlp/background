@@ -311,3 +311,30 @@ def getcomplain(request):
     else:
         return JsonResponse({'message': '请求方法不允许'}, status=401)
 
+@csrf_exempt
+def userprofile(request):
+    try:
+        if request.method == 'GET':
+            data = json.loads(request.body)
+            id = data.get('id')
+            try:
+                user = User.objects.get(id=id)
+                userData = {
+                    'id': user.id,
+                    'username': user.username,
+                    'password': user.password,
+                    'videoNum': user.videoNum,
+                    'likeNum': user.likeNum,
+                    'collectNum': user.collectNum,
+                    'fanNum': user.fanNum,
+                    'followNum': user.followNum,
+                    'avatarUrl': user.avatarUrl,
+                    'isSuperAdmin': user.isSuperAdmin,
+                    'createdTime': user.createdTime,
+                    'sign': user.sign
+                }
+                return JsonResponse({'message': '成功返回', 'userData': userData}, status=200,safe=False)
+            except User.DoesNotExist:
+                return JsonResponse({'msg': '用户不存在'}, status=401)
+    except Exception as e:
+        return JsonResponse({'msg': '未知错误'}, status=402)
