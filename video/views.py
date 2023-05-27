@@ -51,9 +51,9 @@ def upload(request):  # get video and cover
                              videoUrl=videoUrl, zone=zone, userID=userID, createdTime=datetime.datetime.now())
             User.objects.get(userID=userID).update(videoNum=User.objects.get(userID=userID).videoNum+1)
             newVideo.save()
-            return JsonResponse({'msg': "上传成功"}, status=200)
+            return JsonResponse({'message': "上传成功"}, status=200)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -67,9 +67,9 @@ def content(request):
             videoID = data.get('videoID')
             newComment = Comment(id=id, username=username, content=content, videoID=videoID)
             newComment.save()
-            return JsonResponse({'msg': "上传成功"}, status=200)
+            return JsonResponse({'message': "上传成功"}, status=200)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -86,7 +86,7 @@ def delete(request):
             user.update(videoNum=user.videoNum-1)
             Video.objects.get(id=videoID).delete()
 
-            return JsonResponse({'msg': "删除成功"}, status=200)
+            return JsonResponse({'message': "删除成功"}, status=200)
 
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
