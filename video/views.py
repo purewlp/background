@@ -1,4 +1,5 @@
 import datetime
+import paramiko
 
 import json
 import os
@@ -23,27 +24,38 @@ def upload(request):  # get video and cover
             zone = data.get('zone')
             userID = data.get('userID')
 
-            dir_video = os.path.join(os.path.join(BASE_DIR, 'static'), 'videos')
-            dir_cover = os.path.join(os.path.join(BASE_DIR, 'static'), 'cover')
+            dir_video = '/home/ubuntu/data/videos/'
+            dir_cover = '/home/ubuntu/data/covers/'
+            transport = paramiko.Transprot(('43.143.140.26', 22))
+            transport.connect(username='ubuntu', password='Wlp123456789')
+            sftp = paramiko.SFTPClient.from_transprot(transport)
 
-            if not os.path.exists(dir_video):
-                os.mkdir(dir_video)
-            if not os.path.exists(dir_cover):
-                os.mkdir(dir_cover)
+            # dir_video = os.path.join(os.path.join(BASE_DIR, 'static'), 'videos')
+            # dir_cover = os.path.join(os.path.join(BASE_DIR, 'static'), 'cover')
+
+            # if not os.path.exists(dir_video):
+            #     os.mkdir(dir_video)
+            # if not os.path.exists(dir_cover):
+            #     os.mkdir(dir_cover)
 
             video = request.FILES.get('video')
             cover = request.FILES.get('cover')
 
-            dir_video = os.path.join(dir_video, video.name)
-            dest = open(dir_video, 'wb+')
-            for chunk in video.chunks():
-                dest.write(chunk)
-            dest.close()
-            dir_cover = os.path.join(dir_cover, cover.name)
-            dest = open(dir_cover, 'wb+')
-            for chunk in cover.chunks():
-                dest.write(chunk)
-            dest.close()
+            # dir_video = os.path.join(dir_video, video.name)
+            dir_video = dir_video + video.name
+            sftp.put(video, dir_video)
+            # dest = open(dir_video, 'wb+')
+            # for chunk in video.chunks():
+            #     dest.write(chunk)
+            # dest.close()
+            # dir_cover = os.path.join(dir_cover, cover.name)
+            dir_cover = dir_cover + cover.name
+            sftp.put(cover, dir_cover)
+            # dest = open(dir_cover, 'wb+')
+            # for chunk in cover.chunks():
+            #     dest.write(chunk)
+            # dest.close()
+            transport.close()
 
             videoUrl = dir_video
             coverUrl = dir_cover
@@ -80,8 +92,16 @@ def delete(request):
             videoID = data.get('videoID')
             dir_video = Video.objects.get(id=videoID).videoUrl
             dir_cover = Video.objects.get(id=videoID).coverUrl
-            os.remove(dir_video)
-            os.remove(dir_cover)
+
+            transport = paramiko.Transprot(('43.143.140.26', 22))
+            transport.connect(username='ubuntu', password='Wlp123456789')
+            sftp = paramiko.SFTPClient.from_transprot(transport)
+
+            sftp.remove(dir_cover)
+            sftp.remove(dir_cover)
+
+            # os.remove(dir_video)
+            # os.remove(dir_cover)
             user = User.objects.get(id=Video.objects.get(id=videoID).userID)
             user.update(videoNum=user.videoNum-1)
             Video.objects.get(id=videoID).delete()
