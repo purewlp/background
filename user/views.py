@@ -21,9 +21,9 @@ def register(request):
             except User.DoesNotExist:
                 newUser = User(username=username, password=password, createdTime=timezone.now())
                 newUser.save()
-                return JsonResponse({'msg': "注册成功"}, status=200)
+                return JsonResponse({'message': "注册成功"}, status=200)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=402)
+        return JsonResponse({'message': "未知错误"}, status=402)
 
 
 
@@ -57,9 +57,9 @@ def login(request):
 
                 return JsonResponse({'message': '登录成功', 'userData': userData}, status=200)
             except User.DoesNotExist:
-                return JsonResponse({'msg': '用户不存在'}, status=401)
+                return JsonResponse({'message': '用户不存在'}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': '未知错误'}, status=402)
+        return JsonResponse({'message': '未知错误'}, status=402)
 
 
 @csrf_exempt  # 跨域设置
@@ -174,7 +174,7 @@ def avatar(request):
             user.avatar.save(avatarFile.name, avatarFile, save=True)
             user.avatarUrl = user.avatar.url
             user.save()
-            return JsonResponse({'message':'成功返回'}, status=200)
+            return JsonResponse({'message': '成功返回'}, status=200)
         except Exception as e:
             return JsonResponse({'message': '未知错误'}, status=401)
     else:
@@ -264,9 +264,9 @@ def follow(request):
                 following = Follow.objects.create(followingId= followid, followerId=userid)
                 return JsonResponse({'message': '成功返回',}, status=200,safe=False)
             except User.DoesNotExist:
-                return JsonResponse({'msg': '用户不存在'}, status=401)
+                return JsonResponse({'message': '用户不存在'}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': '未知错误'}, status=402)
+        return JsonResponse({'message': '未知错误'}, status=402)
 @csrf_exempt
 def disfollow(request):
     try:
@@ -284,9 +284,9 @@ def disfollow(request):
                 Follow.objects.filter(followingId= followid, followerId=userid).delete()
                 return JsonResponse({'message': '成功返回',}, status=200,safe=False)
             except User.DoesNotExist:
-                return JsonResponse({'msg': '用户不存在'}, status=401)
+                return JsonResponse({'message': '用户不存在'}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': '未知错误'}, status=402)
+        return JsonResponse({'message': '未知错误'}, status=402)
 
 
 
@@ -341,8 +341,8 @@ def userprofile(request):
                     'createdTime': user.createdTime,
                     'sign': user.sign
                 }
-                return JsonResponse({'message': '成功返回', 'userData': userData}, status=200,safe=False)
+                return JsonResponse({'message': '成功返回', 'userData': userData}, status=200, safe=False)
             except User.DoesNotExist:
-                return JsonResponse({'msg': '用户不存在'}, status=401)
+                return JsonResponse({'message': '用户不存在'}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': '未知错误'}, status=402)
+        return JsonResponse({'message': '未知错误'}, status=402)

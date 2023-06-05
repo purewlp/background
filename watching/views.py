@@ -26,11 +26,11 @@ def like(request):
             bl_video = Video.objects.filter(id=videoID).update(likeNum=likeNum_video + 1)
             bl_user = User.objects.filter(id=Video.objects.get(id=videoID).userID).update(likeNum=likeNum_user + 1)
             if bl_video == 1 and bl_user == 1:
-                return JsonResponse({'msg': "点赞成功"}, status=200)
+                return JsonResponse({'message': "点赞成功"}, status=200)
             else:
-                return JsonResponse({'msg': "未知错误"}, status=401)
+                return JsonResponse({'message': "未知错误"}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -49,11 +49,11 @@ def save(request):
             bl_user = User.objects.filter(id=Video.objects.get(id=videoID).userID).update(
                 collectNum=collectNum_user + 1)
             if bl_video == 1 and bl_user == 1:
-                return JsonResponse({'msg': "点赞成功"}, status=200)
+                return JsonResponse({'message': "收藏成功"}, status=200)
             else:
-                return JsonResponse({'msg': "未知错误"}, status=401)
+                return JsonResponse({'message': "未知错误"}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -70,11 +70,11 @@ def dislike(request):
             bl_user = User.objects.filter(id=Video.objects.get(id=videoID).userID).update(likeNum=likeNum_user - 1)
             Like.objects.get(id=id).delete()
             if bl_video == 1 and bl_user == 1:
-                return JsonResponse({'msg': "点赞成功"}, status=200)
+                return JsonResponse({'message': "取消点赞成功"}, status=200)
             else:
-                return JsonResponse({'msg': "未知错误"}, status=401)
+                return JsonResponse({'message': "未知错误"}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -92,11 +92,11 @@ def dissave(request):
                 collectNum=collectNum_user - 1)
             Favorite.objects.get(id=id).delete()
             if bl_video == 1 and bl_user == 1:
-                return JsonResponse({'msg': "点赞成功"}, status=200)
+                return JsonResponse({'message': "取消收藏成功"}, status=200)
             else:
-                return JsonResponse({'msg': "未知错误"}, status=401)
+                return JsonResponse({'message': "未知错误"}, status=401)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -109,9 +109,9 @@ def likecomment(request):
             newlike = LikeComment(userID=userID, commentID=id)
             newlike.save()
 
-            return JsonResponse({'msg': "点赞成功"}, status=200)
+            return JsonResponse({'message': "点赞成功"}, status=200)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -123,9 +123,9 @@ def dislikecomment(request):
             userID = data.get('userID')
             LikeComment.objects.get(userID=userID, commentID=id).delete()
 
-            return JsonResponse({'msg': "取消点赞成功"}, status=200)
+            return JsonResponse({'message': "取消点赞成功"}, status=200)
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -136,10 +136,10 @@ def passvideo(request):
             videoID = data.get('videoID')
             Video.objects.get(id=videoID).update(needAudit=0)
             Complain.objects.filter(videoID=videoID).delete()
-            return JsonResponse({'msg': "通过成功"}, status=200)
+            return JsonResponse({'message': "通过成功"}, status=200)
 
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -154,10 +154,10 @@ def message(request):
             fromName = data.get('fromName')
             newMessage = Message(title=title, content=content, createdTime=createdTime, userID=userID, fromName=fromName)
             newMessage.save()
-            return  JsonResponse({'msg': "发送成功"}, status=200)
+            return  JsonResponse({'message': "发送成功"}, status=200)
 
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 
 @csrf_exempt
@@ -172,10 +172,10 @@ def complain(request):
             newComplain = Complain(id=id, description=description, userID=userID, videoID=videoID)
             newComplain.save()
             Video.objects.get(videoID=videoID).update(needAudit=1)
-            return JsonResponse({'msg': "投诉成功"}, status=200)
+            return JsonResponse({'message': "投诉成功"}, status=200)
 
     except Exception as e:
-        return JsonResponse({'msg': "未知错误"}, status=401)
+        return JsonResponse({'message': "未知错误"}, status=401)
 
 @csrf_exempt
 def getvideo(request):
@@ -203,7 +203,7 @@ def getvideo(request):
                     })
             return JsonResponse(
                 {
-                    'msg': "观看成功",
+                    'message': "观看成功",
                     'avatarUrl': user.avatarUrl,
                     'collectNum': video.collectNum,
                     'description': video.description,
@@ -226,4 +226,4 @@ def getvideo(request):
             )
 
     except Exception as e:
-        return JsonResponse({'msg': "视频不存在"}, status=401)
+        return JsonResponse({'message': "视频不存在"}, status=401)
