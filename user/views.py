@@ -108,7 +108,9 @@ def getfollow(request):
                 followingUser = User.objects.get(id=following.followingId)
                 followingsDetails.append({
                     'username': followingUser.username,
-                    'avatarUrl': followingUser.avatarUrl
+                    'avatarUrl': followingUser.avatarUrl,
+                    'id': followingUser.id,
+                    'sign' : followingUser.sign
                 })
             return JsonResponse({'followings': followingsDetails, 'message': '成功返回'}, status=200)
     except User.DoesNotExist:
