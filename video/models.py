@@ -5,9 +5,9 @@ from user.models import User
 class Video(models.Model):
     title = models.CharField(max_length=64)
     description = models.TextField()
-    coverUrl = models.CharField(max_length=64)
-    videoUrl = models.CharField(max_length=64)
-    avatarUrl = models.CharField(max_length=64)
+    coverUrl = models.CharField(max_length=1024)
+    videoUrl = models.CharField(max_length=1024)
+    avatarUrl = models.CharField(max_length=1024)
     likeNum = models.IntegerField(default=0)
     collectNum = models.IntegerField(default=0)
     viewNum = models.IntegerField(default=0)
