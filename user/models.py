@@ -12,7 +12,7 @@ class User(models.Model):
     followNum = models.IntegerField(default=0)
     avatar = models.FileField(upload_to='avatar/')
     createdTime = models.DateTimeField(auto_now_add= True)
-    avatarUrl =models.CharField( max_length=1024, default='')
+    avatarUrl =models.CharField( max_length=128, default='')
     sign = models.CharField(max_length=1024,default='')
 
 
