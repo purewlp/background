@@ -256,7 +256,11 @@ def follow(request):
             followid = data.get('fanId')
             try:
                 user = User.objects.get(id=userid)
+                user.followNum+=1
+                user.save()
                 follow = User.objects.get(id=followid)
+                follow.fanNum+=1
+                follow.save()
                 following = Follow.objects.create(followingId= followid, followerId=userid)
                 return JsonResponse({'message': '成功返回',}, status=200,safe=False)
             except User.DoesNotExist:
@@ -272,7 +276,11 @@ def disfollow(request):
             followid = data.get('fanId')
             try:
                 user = User.objects.get(id=userid)
+                user.followNum-=1
+                user.save()
                 follow = User.objects.get(id=followid)
+                follow.fanNum-=1
+                follow.save()
                 Follow.objects.filter(followingId= followid, followerId=userid).delete()
                 return JsonResponse({'message': '成功返回',}, status=200,safe=False)
             except User.DoesNotExist:
